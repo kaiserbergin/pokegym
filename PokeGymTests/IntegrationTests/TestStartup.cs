@@ -13,10 +13,12 @@ using WireMock.Server;
 
 namespace PokeGymTests.IntegrationTests
 {
-    public class TestStartup
+    public class TestStartup : IDisposable
     {
         public IConfiguration Configuration { get; }
         public FluentMockServer fluentMockServer;
+        private PokeGymContext context;
+        private SqliteConnection connection;
 
         public TestStartup(IConfiguration configuration)
         {
@@ -32,7 +34,7 @@ namespace PokeGymTests.IntegrationTests
 
             
 
-            var connection = new SqliteConnection("Datasource=:memory:");
+            connection = new SqliteConnection("Datasource=:memory:");
             connection.Open();
 
             services.AddDbContext<PokeGymContext>(options =>
@@ -45,8 +47,8 @@ namespace PokeGymTests.IntegrationTests
             using (var scope = sp.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
-                var pokeGymContext = scopedServices.GetRequiredService<PokeGymContext>();
-                pokeGymContext.Database.EnsureCreated();
+                context = scopedServices.GetRequiredService<PokeGymContext>();
+                context.Database.EnsureCreated();
             }
 
             services.AddScoped<PokeGymRepository>();
@@ -73,6 +75,13 @@ namespace PokeGymTests.IntegrationTests
             {
                 endpoints.MapControllers();
             });
+        }
+
+        public void Dispose()
+        {
+            fluentMockServer.Stop();
+            context.Dispose();
+            connection.Close();
         }
     }
 }
