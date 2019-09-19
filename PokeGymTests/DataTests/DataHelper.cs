@@ -31,9 +31,9 @@ namespace PokeGymTests.DataTests
                 Instructor = instructorBrock,
                 Reservations = new List<Reservation>()
                 {
-                    new Reservation() { StudentId = 1 },
-                    new Reservation() { StudentId = 2 },
-                    new Reservation() { StudentId = 3 }
+                    new Reservation() { trainerId = 1 },
+                    new Reservation() { trainerId = 2 },
+                    new Reservation() { trainerId = 3 }
                 }
             };
 
@@ -45,10 +45,10 @@ namespace PokeGymTests.DataTests
                 Instructor = instructorMisty,
                 Reservations = new List<Reservation>()
                 {
-                    new Reservation() { StudentId = 1 },
-                    new Reservation() { StudentId = 2 },
-                    new Reservation() { StudentId = 3 },
-                    new Reservation() { StudentId = 4 }
+                    new Reservation() { trainerId = 1 },
+                    new Reservation() { trainerId = 2 },
+                    new Reservation() { trainerId = 3 },
+                    new Reservation() { trainerId = 4 }
                 }
             };
 
@@ -60,12 +60,12 @@ namespace PokeGymTests.DataTests
                 Instructor = instructorBrock,
                 Reservations = new List<Reservation>()
                 {
-                    new Reservation() { StudentId = 5 },
-                    new Reservation() { StudentId = 2 },
-                    new Reservation() { StudentId = 3 },
-                    new Reservation() { StudentId = 6 },
-                    new Reservation() { StudentId = 7 },
-                    new Reservation() { StudentId = 8 }
+                    new Reservation() { trainerId = 5 },
+                    new Reservation() { trainerId = 2 },
+                    new Reservation() { trainerId = 3 },
+                    new Reservation() { trainerId = 6 },
+                    new Reservation() { trainerId = 7 },
+                    new Reservation() { trainerId = 8 }
                 }
             };
 

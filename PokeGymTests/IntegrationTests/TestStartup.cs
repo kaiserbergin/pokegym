@@ -5,19 +5,23 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PokeGym.Clients;
 using PokeGym.Controllers;
 using PokeGym.Data;
 using System;
+using WireMock.Server;
 
 namespace PokeGymTests.IntegrationTests
 {
     public class TestStartup
     {
         public IConfiguration Configuration { get; }
+        public FluentMockServer fluentMockServer;
 
         public TestStartup(IConfiguration configuration)
         {
             Configuration = configuration;
+            fluentMockServer = FluentMockServer.Start();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -46,6 +50,10 @@ namespace PokeGymTests.IntegrationTests
             }
 
             services.AddScoped<PokeGymRepository>();
+            var settings = new PokedexClientSettings() { baseUrl = new Uri(fluentMockServer.Urls[0]) };
+            services.AddSingleton(settings);
+            services.AddHttpClient<PokeDexClient>();
+            services.AddSingleton(fluentMockServer);
 
             services.AddControllers()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)

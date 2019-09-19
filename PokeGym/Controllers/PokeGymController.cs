@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PokeGym.Clients;
 using PokeGym.Constants;
 using PokeGym.Data;
 using System;
@@ -12,9 +13,11 @@ namespace PokeGym.Controllers
     public class PokeGymController
     {
         private readonly PokeGymRepository pokeGymRepository;
-        public PokeGymController(PokeGymRepository pokeGymRepository)
+        private readonly PokeDexClient pokeDexClient;
+        public PokeGymController(PokeGymRepository pokeGymRepository, PokeDexClient pokeDexClient)
         {
             this.pokeGymRepository = pokeGymRepository;
+            this.pokeDexClient = pokeDexClient;
         }
 
         [HttpGet(RouteConstants.CLASSES_ROUTE)]
@@ -31,17 +34,21 @@ namespace PokeGym.Controllers
             return new OkObjectResult(instructors);
         }
 
-        [HttpGet(RouteConstants.RESERVATIONS_ROUTE + @"/{studentId}")]
-        public async Task<IActionResult> GetReservedClasses(int studentId)
+        [HttpGet(RouteConstants.RESERVATIONS_ROUTE + @"/{trainerId}")]
+        public async Task<IActionResult> GetReservedClasses(int trainerId)
         {
-            var reservedCasses = await pokeGymRepository.GetReservedClassesAsync(studentId);
+            var reservedCasses = await pokeGymRepository.GetReservedClassesAsync(trainerId);
             return new OkObjectResult(reservedCasses);
         }
 
         [HttpPost(RouteConstants.RESERVATIONS_ROUTE)]
         public async Task<IActionResult> AddReservation([FromBody]AddReservationRequest addReservationRequest)
         {
-            await pokeGymRepository.CreateReservationAsync(addReservationRequest.StudentId, addReservationRequest.ClassId);
+            var registeredLeagues = await pokeDexClient.GetRegisteredLeaguesForTrainer(addReservationRequest.trainerId);
+            if (!registeredLeagues.Contains("Indigo"))
+                return new StatusCodeResult(412);
+
+            await pokeGymRepository.CreateReservationAsync(addReservationRequest.trainerId, addReservationRequest.ClassId);
             return new NoContentResult();
         }
 

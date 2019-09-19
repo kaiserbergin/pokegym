@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PokeGym.Clients;
 using PokeGym.Data;
 
 namespace PokeGym
@@ -30,6 +31,7 @@ namespace PokeGym
             services.AddControllers();
             services.AddDbContext<PokeGymContext>(x => x.UseSqlite("Datasource=:memory:"));
             services.AddScoped<PokeGymRepository>();
+            services.AddHttpClient<PokeDexClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

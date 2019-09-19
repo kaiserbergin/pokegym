@@ -17,7 +17,7 @@ namespace PokeGym.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Reservation>()
-                .HasKey(x => new { x.StudentId, x.ClassId });
+                .HasKey(x => new { x.trainerId, x.ClassId });
         }
     }
 
@@ -41,7 +41,7 @@ namespace PokeGym.Data
 
     public class Reservation
     {
-        public int StudentId { get; set; }
+        public int trainerId { get; set; }
 
         public int ClassId { get; set; }
 
