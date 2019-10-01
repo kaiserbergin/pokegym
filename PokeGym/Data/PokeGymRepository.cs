@@ -19,18 +19,18 @@ namespace PokeGym.Data
 
         public async Task<List<Instructor>> GetInstructorsAsync() => await context.Instructors.ToListAsync();
 
-        public async Task<List<Reservation>> GetReservationsAsync(int trainerId) => await context.Reservations.Where(x => x.trainerId == trainerId).ToListAsync();
+        public async Task<List<Reservation>> GetReservationsAsync(int trainerId) => await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
         public async Task CreateReservationAsync(int trainerId, int classId)
         {
-            await context.Reservations.AddAsync(new Reservation { ClassId = classId, trainerId = trainerId });
+            await context.Reservations.AddAsync(new Reservation { ClassId = classId, TrainerId = trainerId });
             await context.SaveChangesAsync();
         }
 
         public async Task<List<Class>> GetReservedClassesAsync(int trainerId)
         {
             var reservations = await context.Reservations
-                .Where(x => x.trainerId == trainerId)
+                .Where(x => x.TrainerId == trainerId)
                 .Include(x => x.Class)
                 .ThenInclude(x => x.Instructor).ToListAsync();
 

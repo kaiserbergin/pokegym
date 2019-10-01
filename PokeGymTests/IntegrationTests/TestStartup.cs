@@ -30,9 +30,7 @@ namespace PokeGymTests.IntegrationTests
         {
             var serviceProvider = new ServiceCollection()
                 .AddEntityFrameworkSqlite()
-                .BuildServiceProvider();
-
-            
+                .BuildServiceProvider();            
 
             connection = new SqliteConnection("Datasource=:memory:");
             connection.Open();
@@ -52,9 +50,11 @@ namespace PokeGymTests.IntegrationTests
             }
 
             services.AddScoped<PokeGymRepository>();
+            
             var settings = new PokedexClientSettings() { baseUrl = new Uri(fluentMockServer.Urls[0]) };
             services.AddSingleton(settings);
             services.AddHttpClient<PokeDexClient>();
+            
             services.AddSingleton(fluentMockServer);
 
             services.AddControllers()

@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using PokeGym.Constants;
 using PokeGym.Data;
 using PokeGymTests.DataTests;
-using RestEase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
-using static PokeGym.Controllers.PokeGymController;
 
 namespace PokeGymTests.IntegrationTests
 {
@@ -78,8 +76,8 @@ namespace PokeGymTests.IntegrationTests
         public async void GetReservedClassesTest()
         {
             // Arrange
-            var trainerId = (await context.Reservations.FirstOrDefaultAsync()).trainerId;
-            var expected = await context.Reservations.Where(x => x.trainerId == trainerId).Select(x => x.Class).ToListAsync();
+            var trainerId = (await context.Reservations.FirstOrDefaultAsync()).TrainerId;
+            var expected = await context.Reservations.Where(x => x.TrainerId == trainerId).Select(x => x.Class).ToListAsync();
 
             // Act
             var response = await client.GetAsync(RouteConstants.RESERVATIONS_ROUTE + $"/{trainerId}");
@@ -96,8 +94,8 @@ namespace PokeGymTests.IntegrationTests
         public async void AddReservationTest()
         {
             // Arrange
-            var trainerId = (await context.Reservations.FirstOrDefaultAsync()).trainerId;
-            var beginningReservations = await context.Reservations.Where(x => x.trainerId == trainerId).ToListAsync();
+            var trainerId = (await context.Reservations.FirstOrDefaultAsync()).TrainerId;
+            var beginningReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
             var content = new AddReservationRequest()
             {
@@ -121,14 +119,13 @@ namespace PokeGymTests.IntegrationTests
                   .WithBody("[\"Joto\", \"Indigo\"]")
               );
 
-            // Act BuildJSONContent
-
+            // Act 
             var response = await client.PostAsync(RouteConstants.RESERVATIONS_ROUTE, requestBodyContent);
 
             // Assert
             Assert.Equal(StatusCodes.Status204NoContent, (int)response.StatusCode);
 
-            var updatedReservations = await context.Reservations.Where(x => x.trainerId == trainerId).ToListAsync();
+            var updatedReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
             Assert.Equal(beginningReservations.Count + 1, updatedReservations.Count);
         }
@@ -137,8 +134,8 @@ namespace PokeGymTests.IntegrationTests
         public async void AddReservationNotValidTest()
         {
             // Arrange
-            var trainerId = (await context.Reservations.FirstOrDefaultAsync()).trainerId;
-            var beginningReservations = await context.Reservations.Where(x => x.trainerId == trainerId).ToListAsync();
+            var trainerId = (await context.Reservations.FirstOrDefaultAsync()).TrainerId;
+            var beginningReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
             var content = new AddReservationRequest()
             {
@@ -162,13 +159,12 @@ namespace PokeGymTests.IntegrationTests
                   .WithBody("[\"Joto\"]")
               );
 
-            // Act BuildJSONContent
-
+            // Act 
             var response = await client.PostAsync(RouteConstants.RESERVATIONS_ROUTE, requestBodyContent);
 
             // Assert
             Assert.Equal(412, (int)response.StatusCode);
-            var updatedReservations = await context.Reservations.Where(x => x.trainerId == trainerId).ToListAsync();
+            var updatedReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
             Assert.Equal(beginningReservations.Count, updatedReservations.Count);
         }

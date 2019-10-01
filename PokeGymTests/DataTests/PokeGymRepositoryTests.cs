@@ -46,15 +46,15 @@ namespace PokeGymTests
         public async void GetReservationsAsyncTest()
         {
             // Arrange
-            var trainerId = (await fixture.Context.Reservations.FirstOrDefaultAsync()).trainerId;
-            var expected = await fixture.Context.Reservations.Where(x => x.trainerId == trainerId).ToListAsync();
+            var trainerId = (await fixture.Context.Reservations.FirstOrDefaultAsync()).TrainerId;
+            var expected = await fixture.Context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
             // Act
             var actual = await fixture.Repository.GetReservationsAsync(trainerId);
 
             // Assert
             Assert.Equal(expected, actual);
-            Assert.True(actual.All(x => x.trainerId == trainerId));
+            Assert.True(actual.All(x => x.TrainerId == trainerId));
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace PokeGymTests
 
             // Assert
             Assert.Equal(originalReservationCount + 1, fixture.Context.Reservations.Count());
-            Assert.Equal(fixture.Context.Reservations.Where(x => x.trainerId == trainerId).FirstOrDefault().Class, reservedClass);
+            Assert.Equal(fixture.Context.Reservations.Where(x => x.TrainerId == trainerId).FirstOrDefault().Class, reservedClass);
         }
     }
 }

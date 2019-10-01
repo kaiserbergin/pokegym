@@ -17,10 +17,14 @@ namespace PokeGym.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Reservation>()
-                .HasKey(x => new { x.trainerId, x.ClassId });
+                .HasKey(x => new { x.TrainerId, x.ClassId });
         }
     }
 
+    // Put these in their own classes in a real project!
+
+
+    #region Entities
     public class Class
     {
         public int ClassId { get; set; }
@@ -41,11 +45,12 @@ namespace PokeGym.Data
 
     public class Reservation
     {
-        public int trainerId { get; set; }
+        public int TrainerId { get; set; }
 
         public int ClassId { get; set; }
 
         [JsonIgnore]
         public Class Class { get; set; }
     }
+    #endregion
 }

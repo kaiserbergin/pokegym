@@ -2,9 +2,6 @@
 using PokeGym.Clients;
 using PokeGym.Constants;
 using PokeGym.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PokeGym.Controllers

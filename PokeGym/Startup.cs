@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PokeGym.Clients;
 using PokeGym.Data;
 
@@ -29,8 +23,13 @@ namespace PokeGym
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<PokeGymContext>(x => x.UseSqlite("Datasource=:memory:"));
+            services.AddOptions();
+            
+            services.AddDbContext<PokeGymContext>(x => x.UseSqlServer("SomeConnectionString"));
             services.AddScoped<PokeGymRepository>();
+
+            services.Configure<PokedexClientSettings>(Configuration.GetSection("PokedexClientSettings"));
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<PokedexClientSettings>>().Value);
             services.AddHttpClient<PokeDexClient>();
         }
 
