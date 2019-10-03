@@ -43,7 +43,7 @@ namespace PokeGym.Controllers
         {
             var registeredLeagues = await pokeDexClient.GetRegisteredLeaguesForTrainer(addReservationRequest.trainerId);
             if (!registeredLeagues.Contains("Indigo"))
-                return new StatusCodeResult(412);
+                return new StatusCodeResult(403);
 
             await pokeGymRepository.CreateReservationAsync(addReservationRequest.trainerId, addReservationRequest.ClassId);
             return new NoContentResult();

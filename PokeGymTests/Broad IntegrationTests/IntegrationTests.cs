@@ -95,15 +95,16 @@ namespace PokeGymTests.IntegrationTests
         {
             // Arrange
             var trainerId = (await context.Reservations.FirstOrDefaultAsync()).TrainerId;
+            var classId = 3;
             var beginningReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
-            var content = new AddReservationRequest()
+            var addReservationRequest = new AddReservationRequest()
             {
                 trainerId = trainerId,
-                ClassId = 3
+                ClassId = classId
             };
             var requestBodyContent = new StringContent(
-                    JsonConvert.SerializeObject(content),
+                    JsonConvert.SerializeObject(addReservationRequest),
                     Encoding.UTF8,
                     "application/json"
                 );
@@ -126,8 +127,13 @@ namespace PokeGymTests.IntegrationTests
             Assert.Equal(StatusCodes.Status204NoContent, (int)response.StatusCode);
 
             var updatedReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
-
             Assert.Equal(beginningReservations.Count + 1, updatedReservations.Count);
+
+            var newReservation = await context.Reservations.Where(x => x.TrainerId == trainerId && x.ClassId == classId).ToListAsync();
+            Assert.Single(newReservation);
+
+            Assert.Single(fluentMockServer.FindLogEntries(Request.Create().WithPath($"/trainers/{trainerId}").UsingGet()));
+            Assert.Single(fluentMockServer.LogEntries);
         }
 
         [Fact]
@@ -167,6 +173,9 @@ namespace PokeGymTests.IntegrationTests
             var updatedReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
             Assert.Equal(beginningReservations.Count, updatedReservations.Count);
+
+            Assert.Single(fluentMockServer.FindLogEntries(Request.Create().WithPath($"/trainers/{trainerId}").UsingGet()));
+            Assert.Single(fluentMockServer.LogEntries);
         }
     }
 }
