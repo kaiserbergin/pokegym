@@ -169,7 +169,7 @@ namespace PokeGymTests.IntegrationTests
             var response = await client.PostAsync(RouteConstants.RESERVATIONS_ROUTE, requestBodyContent);
 
             // Assert
-            Assert.Equal(412, (int)response.StatusCode);
+            Assert.Equal(403, (int)response.StatusCode);
             var updatedReservations = await context.Reservations.Where(x => x.TrainerId == trainerId).ToListAsync();
 
             Assert.Equal(beginningReservations.Count, updatedReservations.Count);
